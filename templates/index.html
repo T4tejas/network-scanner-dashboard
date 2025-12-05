@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Network Scanner</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="container">
+<h1>Home Network Scanner</h1>
+<button id="scanBtn">Scan Network</button>
+<div id="alerts"></div>
+<div id="devices" class="grid">
+{% for d in devices %}
+<div class="card">
+<h3>{{ d.vendor }}</h3>
+<p><strong>IP:</strong> {{ d.ip }}</p>
+<p><strong>MAC:</strong> {{ d.mac }}</p>
+<p><strong>Last Seen:</strong> {{ d.last_seen }}</p>
+</div>
+{% endfor %}
+</div>
+</div>
+
+
+<script>
+document.getElementById('scanBtn').addEventListener('click', async ()=>{
+const resp = await fetch('/api/scan', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({network:'192.168.1.0/24'})});
+const j = await resp.json();
+const devs = j.devices;
+const container = document.getElementById('devices');
+container.innerHTML = '';
+devs.forEach(d=>{
+const card = document.createElement('div');
+card.className = 'card';
+card.innerHTML = `<h3>${d.vendor}</h3><p><strong>IP:</strong> ${d.ip}</p><p><strong>MAC:</strong> ${d.mac}</p><p><strong>Last Seen:</strong> ${d.last_seen}</p>`;
+container.appendChild(card);
+});
+});
+</script>
+</body>
+</html>
