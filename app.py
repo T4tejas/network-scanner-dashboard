@@ -23,14 +23,14 @@ def api_scan():
     devices = scan_network(network_cidr=network)
 # upsert into DB
 for d in devices:
-db.upsert_device(d)
-return jsonify({'devices': devices})
+    db.upsert_device(d)
+    return jsonify({'devices': devices})
 
 
 @app.route('/api/devices')
 def api_devices():
-     return jsonify({'devices': db.get_all_devices()})
+    return jsonify({'devices': db.get_all_devices()})
 
 
 if __name__ == '__main__':
-app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')
