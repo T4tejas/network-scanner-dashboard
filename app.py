@@ -2,13 +2,10 @@ from flask import Flask, render_template, jsonify, request
 from scanner import scan_network
 import db
 
-
 app = Flask(__name__)
 
-
-# initialize DB
+# Initialize DB
 db.init_db()
-
 
 @app.route('/')
 def index():
@@ -20,10 +17,13 @@ def index():
 def api_scan():
     data = request.get_json() or {}
     network = data.get('network', '192.168.1.0/24')
+
     devices = scan_network(network_cidr=network)
-# upsert into DB
-for d in devices:
-    db.upsert_device(d)
+
+    # Save each device to DB
+    for d in devices:
+        db.upsert_device(d)
+
     return jsonify({'devices': devices})
 
 
